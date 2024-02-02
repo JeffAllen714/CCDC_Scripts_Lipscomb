@@ -1,0 +1,45 @@
+#!/bin/bash
+
+# Define the output file on the desktop
+OUTPUT_FILE="$HOME/Desktop/user_activity_log.txt"
+
+# Function to check for new user creation
+check_new_users() {
+    new_users=$(sudo grep -E -o ':[0-9]+:[0-9]+:[0-9]+' /etc/passwd | cut -d ':' -f 1)
+    
+    if [ -n "$new_users" ]; then
+        echo "New users created: $new_users" >> "$OUTPUT_FILE"
+    fi
+}
+
+# Function to check last login/activity
+check_last_activity() {
+    last_activity=$(lastlog -b 30 | grep -v "Never" | awk '{print $1, $3, $4}')
+    
+    if [ -n "$last_activity" ]; then
+        echo -e "Last login/activity:\n$last_activity" >> "$OUTPUT_FILE"
+    fi
+}
+
+# Function to remove new users made in the last 29 minutes
+remove_new_users() {
+    current_time=$(date +%s)
+    new_users=$(sudo grep -E -o ':[0-9]+:[0-9]+:[0-9]+' /etc/passwd | cut -d ':' -f 1)
+    
+    for user in $new_users; do
+        creation_time=$(sudo grep "$user" /etc/passwd | cut -d ':' -f 3)
+        if [ "$((current_time - creation_time))" -lt 1740 ]; then  # 1740 seconds = 29 minutes
+            sudo userdel "$user"
+            echo "Removed new user: $user" >> "$OUTPUT_FILE"
+        fi
+    done
+}
+
+# Run the functions
+check_new_users
+check_last_activity
+remove_new_users
+
+
+
+

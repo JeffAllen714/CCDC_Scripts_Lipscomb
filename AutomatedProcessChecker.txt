@@ -1,0 +1,33 @@
+#!/bin/bash
+
+# Output file on the desktop
+OUTPUT_FILE="$HOME/Desktop/process_check_log.txt"
+
+# Temporary file to store previous processes
+TMP_FILE="$HOME/Desktop/previous_processes.txt"
+
+# Function to check processes
+check_processes() {
+    date >> "$OUTPUT_FILE"
+    ps aux | sort >> "$OUTPUT_FILE"
+    echo "----------------------------------------" >> "$OUTPUT_FILE"
+}
+
+# Function to check for new processes and alert if more than 5
+check_for_new_processes() {
+    ps aux | sort > "$TMP_FILE"
+    new_processes=$(diff "$TMP_FILE" "$OUTPUT_FILE" | grep '>' | wc -l)
+    
+    if [ "$new_processes" -gt 5 ]; then
+        echo "ALERT: More than 5 new processes detected!" | tee -a "$OUTPUT_FILE"
+    fi
+
+    rm "$TMP_FILE"
+}
+
+# Run the functions
+check_for_new_processes
+check_processes
+
+# To make it run every 10 minutes using cron, add the following line to your crontab:
+# */10 * * * * /path/to/process_check_script.sh

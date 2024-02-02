@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# Set the path for the log file on the desktop
+log_file="$HOME/Desktop/clamav_scan_results_$(date +\%Y\%m\%d_\%H\%M\%S).log"
+
+# Run ClamAV scan and save the results to the log file
+clamscan --recursive /home > "$log_file" 2>&1
+
+# Display a message indicating the scan is completed
+echo "ClamAV scan completed. Results saved to: $log_file"
+
+
+# Add the following to a Cron Job:
+#0 */2 * * * /path/to/clamav_scan.sh

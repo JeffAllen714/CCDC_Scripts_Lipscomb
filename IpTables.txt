@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# Output file on the desktop
+OUTPUT_FILE="$HOME/Desktop/firewall_log.txt"
+
+# Function to allow specific ports
+allow_specific_ports() {
+    read -p "Enter the ports to allow (comma-separated): " allowed_ports
+    IFS=',' read -ra ports_array <<< "$allowed_ports"
+
+    for port in "${ports_array[@]}"; do
+        sudo iptables -A INPUT -p tcp --dport "$port" -j ACCEPT
+        echo "Allowed incoming traffic on port $port" >> "$OUTPUT_FILE"
+    done
+}
+
+# Function to deny all other incoming traffic
+deny_all_traffic() {
+    sudo iptables -P INPUT DROP
+    echo "Denied all other incoming traffic" >> "$OUTPUT_FILE"
+}
+
+# Run the functions
+allow_specific_ports
+deny_all_traffic

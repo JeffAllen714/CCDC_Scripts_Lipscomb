@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# List of scored administrative and normal users
+admin_users=("elara.boss" "sarah.lee" "lisa.brown" "michael.davis" "emily.chen" "tom.harris" "bob.johnson" "david.kim" "rachel.patel" "dave.grohl" "kate.skye" "leo.zenith" "jack.rover")
+normal_users=("lucy.nova" "xavier.blackhole" "ophelia.redding" "marcus.atlas" "yara.nebula" "parker.posey" "maya.star" "zachary.comet" "quinn.jovi" "nina.eclipse" "alice.bowie" "ruby.rose" "owen.mars" "bob.dylan" "samantha.stephens" "parker.jupiter" "carol.rivers" "taurus.tucker" "rachel.venus" "emily.waters" "una.veda" "ruby.starlight" "frank.zappa" "ava.stardust" "samantha.aurora" "grace.slick" "benny.spacey" "sophia.constellation" "harry.potter" "celine.cosmos" "tessa.nova" "ivy.lee" "dave.marsden" "thomas.spacestation" "kate.bush" "emma.nova" "una.moonbase" "luna.lovegood" "frank.astro" "victor.meteor" "mars.patel" "grace.luna" "wendy.starship" "neptune.williams" "henry.orbit" "ivy.starling")
+
+# Output files
+identified_admins_file="identified_admins.txt"
+unidentified_admins_file="UNIDENTIFIED_admins.txt"
+identified_normals_file="identified_normals.txt"
+unidentified_normals_file="UNIDENTIFIED_normals.txt"
+
+# Get a list of all users on the system
+all_users=($(getent passwd | cut -d: -f1))
+
+# Check each user and categorize them
+for user in "${all_users[@]}"; do
+    if [[ " ${admin_users[@]} " =~ " ${user} " ]]; then
+        echo "$user is a scored administrative user." >> "$identified_admins_file"
+    elif [[ " ${normal_users[@]} " =~ " ${user} " ]]; then
+        echo "$user is a scored normal user." >> "$identified_normals_file"
+    else
+        echo "$user is unidentified." >> "$unidentified_admins_file"
+    fi
+done
+
