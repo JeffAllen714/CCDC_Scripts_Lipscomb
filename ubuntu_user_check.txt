@@ -5,10 +5,9 @@ admin_users=("elara.boss" "sarah.lee" "lisa.brown" "michael.davis" "emily.chen" 
 normal_users=("lucy.nova" "xavier.blackhole" "ophelia.redding" "marcus.atlas" "yara.nebula" "parker.posey" "maya.star" "zachary.comet" "quinn.jovi" "nina.eclipse" "alice.bowie" "ruby.rose" "owen.mars" "bob.dylan" "samantha.stephens" "parker.jupiter" "carol.rivers" "taurus.tucker" "rachel.venus" "emily.waters" "una.veda" "ruby.starlight" "frank.zappa" "ava.stardust" "samantha.aurora" "grace.slick" "benny.spacey" "sophia.constellation" "harry.potter" "celine.cosmos" "tessa.nova" "ivy.lee" "dave.marsden" "thomas.spacestation" "kate.bush" "emma.nova" "una.moonbase" "luna.lovegood" "frank.astro" "victor.meteor" "mars.patel" "grace.luna" "wendy.starship" "neptune.williams" "henry.orbit" "ivy.starling")
 
 # Output files
-identified_admins_file="identified_admins.txt"
-unidentified_admins_file="UNIDENTIFIED_admins.txt"
-identified_normals_file="identified_normals.txt"
-unidentified_normals_file="UNIDENTIFIED_normals.txt"
+scored_admins_file="scored_admins.txt"
+scored_normals_file="scored_normals.txt"
+unidentified_users_file="UNIDENTIFIED_users.txt"
 
 # Get a list of all users on the system
 all_users=($(getent passwd | cut -d: -f1))
@@ -16,11 +15,10 @@ all_users=($(getent passwd | cut -d: -f1))
 # Check each user and categorize them
 for user in "${all_users[@]}"; do
     if [[ " ${admin_users[@]} " =~ " ${user} " ]]; then
-        echo "$user is a scored administrative user." >> "$identified_admins_file"
+        echo "$user" >> "$scored_admins_file"
     elif [[ " ${normal_users[@]} " =~ " ${user} " ]]; then
-        echo "$user is a scored normal user." >> "$identified_normals_file"
+        echo "$user" >> "$scored_normals_file"
     else
-        echo "$user is unidentified." >> "$unidentified_admins_file"
+        echo "$user" >> "$unidentified_users_file"
     fi
 done
-
