@@ -6,9 +6,8 @@ normal_users=("lucy.nova" "xavier.blackhole" "ophelia.redding" "marcus.atlas" "y
 
 # Output files
 identified_admins_file="identified_admins.txt"
-unidentified_admins_file="UNIDENTIFIED_admins.txt"
 identified_normals_file="identified_normals.txt"
-unidentified_normals_file="UNIDENTIFIED_normals.txt"
+unidentified_users_file="UNIDENTIFIED_users.txt"
 
 # Get a list of all users on the system (using /etc/passwd)
 all_users=($(cut -d: -f1 /etc/passwd))
@@ -20,6 +19,7 @@ for user in "${all_users[@]}"; do
     elif [[ " ${normal_users[@]} " =~ " ${user} " ]]; then
         echo "$user is a scored normal user." >> "$identified_normals_file"
     else
-        echo "$user is unidentified." >> "$unidentified_admins_file"
+        echo "$user is unidentified." >> "$unidentified_users_file"
     fi
 done
+
